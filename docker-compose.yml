@@ -1,0 +1,33 @@
+version: '3'
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+services:
+  php-fpm: 
+    build:
+      context: ./php-fpm
+    ports:
+      - "9000:9000" 
+    networks: 
+      - frontend
+      - backend
+    
+  caddy:
+    image : "abiosoft/caddy"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./Caddy/Caddyfile:/etc/Caddyfile"
+      - "${WWWROOT}:/home/wwwroot/"
+    networks: 
+      - frontend
+      - backend
+    depends_on:
+      - php-fpm  
+
+    
